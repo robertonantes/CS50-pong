@@ -1,8 +1,8 @@
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
 
-VIRTUAL_WIDTH = 432
-VIRTUAL_HEIGHT = 243
+VIRTUAL_WIDTH = 300
+VIRTUAL_HEIGHT = 225
 
 
 -- push is a library that will allow us to draw our game at a virtual
@@ -28,14 +28,25 @@ function love.load()
   })
 end
 
+function love.keypressed(key)
+  if(key == 'escape') then
+    love.event.quit()
+  end
+end
+
 function love.draw()
   push:apply('start')
-  love.graphics.printf(
-    'Hello Pong!',
-    0,
-    VIRTUAL_HEIGHT / 2 - 6,
-    VIRTUAL_WIDTH,
-    'center'
-  )
+
+  love.graphics.clear(0.156, 0.17, 0.203, 1)
+  
+  -- left paddle
+  love.graphics.rectangle('fill', 10, 30, 5, 20)
+  
+  -- right paddle
+  love.graphics.rectangle('fill', VIRTUAL_WIDTH - 10, VIRTUAL_HEIGHT -50, 5, 20)
+  
+  -- ball
+  love.graphics.rectangle('fill', VIRTUAL_WIDTH / 2 - 2, VIRTUAL_HEIGHT / 2 - 2, 4, 4)
   push:apply('end')
 end
+
