@@ -12,7 +12,12 @@ PADDLE_SPEED = 200
 -- a more retro aesthetic
 --
 -- https://github.com/Ulydev/push
-push = require('push');
+push = require('push')
+
+-- https://github.com/vrld/hump/blob/master/class.lua
+Class = require('class')
+require('Paddle')
+require('Ball')
 
 function love.load()
 
@@ -30,18 +35,9 @@ function love.load()
     vsync = true
   })
 
-
-  -- Players position
-  player1Y = 30;
-  player2Y = VIRTUAL_HEIGHT - 50;
-
-  -- Ball position
-  ballX = VIRTUAL_WIDTH / 2 - 2;
-  ballY = VIRTUAL_HEIGHT / 2 - 2;
-
-  -- Ball Speed
-  ballDX = math.random(2) == 1 and 100 or -100
-  ballDY = math.random(-50, 50)
+  player1 = Paddle(10, 30, 5, 20)
+  player2 = Paddle(VIRTUAL_WIDTH - 10, VIRTUAL_HEIGHT - 50, 5, 20)
+  ball = Ball(VIRTUAL_WIDTH / 2 -2, VIRTUAL_HEIGHT / 2 - 2, 4, 4)
 
   gameState = 'start'
 
@@ -49,22 +45,33 @@ function love.load()
 end
 
 function love.update(dt)
+
+  -- p1 movement
   if love.keyboard.isDown('w') then
-    player1Y = player1Y - PADDLE_SPEED * dt
+    player1.dy = -PADDLE_SPEED
   elseif love.keyboard.isDown('s') then
-    player1Y = player1Y + PADDLE_SPEED * dt
+    player1.dy = PADDLE_SPEED
+  else
+    player1.dy = 0
   end
 
+  -- p2 movement
   if love.keyboard.isDown('up') then
-    player2Y = player2Y - PADDLE_SPEED * dt
+    player2.dy = -PADDLE_SPEED
   elseif love.keyboard.isDown('down') then
-    player2Y = player2Y + PADDLE_SPEED * dt
+    player2.dy = PADDLE_SPEED
+  else
+    player2.dy = 0
   end
+
   
   if gameState == 'play' then
-    ballX = ballX + ballDX * dt
-    ballY = ballY + ballDY * dt
+    ball:update(dt)
   end
+
+  player1:update(dt)
+  player2:update(dt)
+
 end
 
 function love.keypressed(key)
@@ -76,10 +83,7 @@ function love.keypressed(key)
       gameState = 'play'
     else
       gameState = 'start'
-      ballX = VIRTUAL_WIDTH / 2 - 2
-      ballY = VIRTUAL_HEIGHT / 2 -2
-      ballDX = math.random(2) == 1 and 100 or -100
-      ballDY = math.random(-50, 50) * 1.5
+      ball:reset()
     end
   end
 end
@@ -94,13 +98,13 @@ function love.draw()
   love.graphics.print(0, VIRTUAL_WIDTH / 2 + 30, VIRTUAL_HEIGHT / 3);
   
   -- left paddle
-  love.graphics.rectangle('fill', 10, player1Y, 5, 20)
-  
+  player1:render()
+
   -- right paddle
-  love.graphics.rectangle('fill', VIRTUAL_WIDTH - 10, player2Y, 5, 20)
-  
+  player2:render()
+
   -- ball
-  love.graphics.rectangle('fill', ballX, ballY, 4, 4)
+  ball:render()
   push:apply('end')
 end
 
