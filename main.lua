@@ -21,13 +21,16 @@ require('Ball')
 
 function love.load()
 
-  -- Change filter to preserve retro looking
+  -- Change filter to preserve retro look
   love.graphics.setDefaultFilter('nearest', 'nearest');
   math.randomseed(os.time())
 
   -- Load font
   scoreFont = love.graphics.newFont('assets/font.ttf', 32);
   love.graphics.setFont(scoreFont);
+
+  -- Set window title
+  love.window.setTitle('Pong!');
 
   push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT,{
     fullscreen = false,
@@ -67,6 +70,30 @@ function love.update(dt)
   
   if gameState == 'play' then
     ball:update(dt)
+
+    if(ball:collides(player1)) then
+      ball.dx = -ball.dx * 1.03
+      ball.x = player1.x + 5
+
+      if(ball.dy < 0) then
+        ball.dy = -math.random(10, 150)
+      else
+        ball.dy = math.random(10, 150)
+      end
+    end
+    
+  end
+
+  -- Ball collision top screen
+  if(ball.y <= 0) then
+    ball.y = 0
+    ball.dy = -ball.dy
+  end
+
+  -- Ball collision bottom screen
+  if(ball.y >= VIRTUAL_HEIGHT -4 ) then 
+    ball.y = VIRTUAL_HEIGHT -4
+    ball.dy = -ball.dy
   end
 
   player1:update(dt)
