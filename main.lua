@@ -82,6 +82,18 @@ function love.update(dt)
       end
     end
     
+
+    if(ball:collides(player2)) then
+      ball.dx = -ball.dx * 1.03
+      ball.x = player2.x - 5
+
+      if(ball.dy < 0) then
+        ball.dy = -math.random(10, 150)
+      else
+        ball.dy = math.random(10, 150)
+      end
+    end
+
   end
 
   -- Ball collision top screen
